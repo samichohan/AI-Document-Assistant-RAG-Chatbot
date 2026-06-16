@@ -18,4 +18,4 @@ CHUNK_OVERLAP = 50
 TOP_K = 4
 
 # FAISS index save location
-FAISS_INDEX_PATH = "data/faiss_index"
+FAISS_INDEX_PATH = "/tmp/faiss_index"
