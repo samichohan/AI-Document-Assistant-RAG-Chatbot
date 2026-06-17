@@ -4,7 +4,7 @@ ingestion.py
 Supports:
   • PDF  → PyPDFLoader
   • TXT  → plain read
-  • PNG / JPG / JPEG / BMP / TIFF → Tesseract OCR  (pytesseract + Pillow)
+  • PNG / JPG / JPEG / BMP / TIFF → EasyOCR (works Windows + Streamlit Cloud)
 Returns a list of LangChain Document chunks ready for embedding.
 """
 
@@ -34,53 +34,18 @@ def load_text(file_path: str) -> list[Document]:
 
 
 def load_image_ocr(file_path: str) -> list[Document]:
-    """Extract text from an image using Tesseract OCR."""
+    """
+    Extract text from image using EasyOCR.
+    Works on Windows local + Streamlit Cloud — no system install needed.
+    """
     try:
-        import pytesseract
-        from PIL import Image, ImageEnhance, ImageFilter
+        import easyocr
     except ImportError:
-        raise ImportError(
-            "pytesseract and Pillow are required for image OCR. "
-            "Run: pip install pytesseract Pillow"
-        )
+        raise ImportError("Run: pip install easyocr")
 
-    # ── Auto-detect Tesseract path ─────────────────────────────────────────────
-    import shutil
-    import platform
-
-    tesseract_path = shutil.which("tesseract")  # Linux/Mac/Cloud pe milega
-
-    if not tesseract_path:
-        # Windows common install paths
-        windows_paths = [
-            r"C:\Program Files\Tesseract-OCR\tesseract.exe",
-            r"C:\Program Files (x86)\Tesseract-OCR\tesseract.exe",
-            r"C:\Users\{}\AppData\Local\Tesseract-OCR\tesseract.exe".format(
-                os.environ.get("USERNAME", "")
-            ),
-        ]
-        for path in windows_paths:
-            if os.path.exists(path):
-                pytesseract.pytesseract.tesseract_cmd = path
-                tesseract_path = path
-                break
-
-    if not tesseract_path and platform.system() == "Windows":
-        raise RuntimeError(
-            "Tesseract not found!\n"
-            "Please install from: https://github.com/UB-Mannheim/tesseract/wiki\n"
-            "Default path: C:\\Program Files\\Tesseract-OCR\\tesseract.exe"
-        )
-
-    img = Image.open(file_path)
-
-    # ── Pre-processing for better OCR accuracy ────────────────────────────────
-    img = img.convert("L")                              # grayscale
-    img = img.filter(ImageFilter.MedianFilter())        # denoise
-    enhancer = ImageEnhance.Contrast(img)
-    img = enhancer.enhance(2)                           # boost contrast
-
-    text = pytesseract.image_to_string(img, lang="eng")
+    reader  = easyocr.Reader(['en'], gpu=False)
+    results = reader.readtext(file_path, detail=0)
+    text    = "\n".join(results)
 
     if not text.strip():
         text = "[No readable text found in this image.]"
@@ -125,7 +90,6 @@ def ingest_multiple(file_paths: list[str]) -> list[Document]:
     for path in file_paths:
         try:
             chunks = ingest(path)
-            # tag each chunk with its source filename for multi-doc retrieval
             fname = os.path.basename(path)
             for chunk in chunks:
                 chunk.metadata.setdefault("source", fname)
