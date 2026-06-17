@@ -11,9 +11,6 @@ Returns a list of LangChain Document chunks ready for embedding.
 import os
 import sys
 sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
-import pytesseract
-
-pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
 
 from langchain_core.documents import Document
 from langchain_community.document_loaders import PyPDFLoader
@@ -46,8 +43,16 @@ def load_image_ocr(file_path: str) -> list[Document]:
             "pytesseract and Pillow are required for image OCR. "
             "Run: pip install pytesseract Pillow"
         )
+    import shutil
+    if shutil.which("tesseract"):
+        pass  # Linux/Cloud pe PATH se mil jayega
+    else:
+        pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
 
+
+   
     img = Image.open(file_path)
+
 
     # ── Pre-processing for better OCR accuracy ────────────────────────────────
     img = img.convert("L")                              # grayscale
