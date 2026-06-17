@@ -1,24 +1,14 @@
-# ── Core LangChain ────────────────────────────────────────────────────────────
 langchain
 langchain-community
 langchain-groq
 langchain-huggingface
-
-# ── Embeddings & Vector Store ─────────────────────────────────────────────────
 sentence-transformers
 faiss-cpu
-
-# ── Cloud Vector DB (optional — needed only if PINECONE_API_KEY is set) ───────
-pinecone-client
-langchain-pinecone
-
-# ── Document Loaders ───────────────────────────────────────────────────────────
 pypdf
-
-# ── OCR (Image Support) ───────────────────────────────────────────────────────
-pytesseract
-Pillow
-
-# ── Utilities ─────────────────────────────────────────────────────────────────
 python-dotenv
 streamlit
+pytesseract
+Pillow
+pinecone-client
+langchain-pinecone
+easyocr
