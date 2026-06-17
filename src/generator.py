@@ -13,7 +13,7 @@ def generate_answer(query: str, chunks: list) -> str:
 
     model = ChatGroq(
         api_key=api_key,
-        model_name="llama-3.3-70b-versatile",
+        model_name=\n
         temperature=0.7,
         max_tokens=1000
     )
@@ -35,3 +35,4 @@ Answer:""")
 
     response = model.invoke(messages)
     return response.content
+                            

@@ -8,7 +8,7 @@ GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 GROQ_MODEL = "llama-3.3-70b-versatile"
 
 # Embedding Model (free, local - no API key needed)
-EMBEDDING_MODEL = "sentence-transformers/all-MiniLM-L6-v2"
+EMBEDDING_MODEL =   "sentence-transformers/all-MiniLM-L6-v2"
 
 # Chunking settings
 CHUNK_SIZE = 500

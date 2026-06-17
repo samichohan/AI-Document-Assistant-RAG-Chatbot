@@ -14,7 +14,7 @@ def load_pdf(file_path: str) -> list:
     return documents
  
  
-def load_text(text: str) -> list:
+def load_text(text: str) -> list:   
     """Plain text string ko document format mein convert karo"""
     from langchain.schema import Document
     return [Document(page_content=text, metadata={"source": "user_input"})]
