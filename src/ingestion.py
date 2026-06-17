@@ -43,16 +43,36 @@ def load_image_ocr(file_path: str) -> list[Document]:
             "pytesseract and Pillow are required for image OCR. "
             "Run: pip install pytesseract Pillow"
         )
+
+    # ── Auto-detect Tesseract path ─────────────────────────────────────────────
     import shutil
-    if shutil.which("tesseract"):
-        pass  # Linux/Cloud pe PATH se mil jayega
-    else:
-        pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
+    import platform
 
+    tesseract_path = shutil.which("tesseract")  # Linux/Mac/Cloud pe milega
 
-   
+    if not tesseract_path:
+        # Windows common install paths
+        windows_paths = [
+            r"C:\Program Files\Tesseract-OCR\tesseract.exe",
+            r"C:\Program Files (x86)\Tesseract-OCR\tesseract.exe",
+            r"C:\Users\{}\AppData\Local\Tesseract-OCR\tesseract.exe".format(
+                os.environ.get("USERNAME", "")
+            ),
+        ]
+        for path in windows_paths:
+            if os.path.exists(path):
+                pytesseract.pytesseract.tesseract_cmd = path
+                tesseract_path = path
+                break
+
+    if not tesseract_path and platform.system() == "Windows":
+        raise RuntimeError(
+            "Tesseract not found!\n"
+            "Please install from: https://github.com/UB-Mannheim/tesseract/wiki\n"
+            "Default path: C:\\Program Files\\Tesseract-OCR\\tesseract.exe"
+        )
+
     img = Image.open(file_path)
-
 
     # ── Pre-processing for better OCR accuracy ────────────────────────────────
     img = img.convert("L")                              # grayscale
