@@ -12,3 +12,4 @@ Pillow
 pinecone-client
 langchain-pinecone
 easyocr
+langchain-cohere
