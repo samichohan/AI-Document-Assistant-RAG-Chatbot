@@ -3,17 +3,12 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-import os
-from dotenv import load_dotenv
-
-load_dotenv()
-
 # ── LLM ───────────────────────────────────────────────────────────────────────
 GROQ_API_KEY   = os.getenv("GROQ_API_KEY")
-GROQ_MODEL     = "llama-3.3-70b-versatile"
+GROQ_MODEL     = "openai/gpt-oss-120b"
 
 # ── Embeddings ────────────────────────────────────────────────────────────────
-EMBEDDING_MODEL = "sentence-transformers/all-MiniLM-L6-v2"
+EMBEDDING_MODEL = "embed-english-v3.0"
 
 # ── Chunking ──────────────────────────────────────────────────────────────────
 CHUNK_SIZE    = 500
@@ -36,3 +31,6 @@ TESSERACT_CMD = os.getenv("TESSERACT_CMD", "tesseract")   # override if needed
 
 # ── Chat History ──────────────────────────────────────────────────────────────
 MAX_HISTORY_TURNS = 6          # last N turns sent to LLM as context
+
+# ── OCR ───────────────────────────────────────────────────────────────────────
+TESSERACT_CMD = os.getenv("TESSERACT_CMD", r"C:\Program Files\Tesseract-OCR\tesseract.exe")

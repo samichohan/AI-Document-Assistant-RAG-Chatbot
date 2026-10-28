@@ -15,7 +15,13 @@ sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
 
 from langchain_core.documents import Document
 from langchain_community.vectorstores import FAISS
-from langchain_huggingface import HuggingFaceEmbeddings
+from langchain_cohere import CohereEmbeddings
+EMBEDDING_MODEL = 'embed-english-v3.0'
+embedding_model = CohereEmbeddings(
+    model = EMBEDDING_MODEL,
+    cohere_api_key=os.getenv('COHERE_API_KEY')
+)
+
 from config import (
     EMBEDDING_MODEL,
     FAISS_INDEX_PATH,
@@ -30,10 +36,10 @@ from config import (
 
 _embedding_model = None
 
-def get_embedding_model() -> HuggingFaceEmbeddings:
+def get_embedding_model() -> CohereEmbeddings:
     global _embedding_model
     if _embedding_model is None:
-        _embedding_model = HuggingFaceEmbeddings(model_name=EMBEDDING_MODEL)
+        _embedding_model = CohereEmbeddings(model_name=EMBEDDING_MODEL)
     return _embedding_model
 
 
